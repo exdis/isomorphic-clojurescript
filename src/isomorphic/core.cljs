@@ -1,27 +1,33 @@
 (ns ^:figwheel-always isomorphic.core
-    (:require[om.core :as om :include-macros true]
-              [om.dom :as dom :include-macros true]))
+    (:require [om.core :as om :include-macros true]
+              [om.dom :as dom :include-macros true]
+              [ajax.core :refer [GET POST]]))
 
 (enable-console-print!)
 
-(println "Edits to this text should show up in your developer console.")
+(def repos (atom []))
 
-;; define your app data so that it doesn't get over-written on reload
+(defn get-repos [response]
+  (reset! repos response))
 
-(defonce app-state (atom {:text "Hello world!"}))
+(GET "http://api.github.com/users/exdis/repos"
+     {:handler get-repos
+      :response-format :json
+      :keywords? true})
 
-(om/root
-  (fn [data owner]
-    (reify om/IRender
-      (render [_]
-        (dom/h1 nil (:text data)))))
-  app-state
+(defn repo-item [repo owner]
+  (reify om/IRender
+    (render [_]
+      (dom/li nil (:name repo)))))
+
+(defn repo-list [data owner]
+  (reify om/IRender
+    (render [_]
+      (dom/h1 nil "GitHub repos")
+      (apply dom/ul nil
+        (om/build-all repo-item data)))))
+
+(om/root repo-list repos
   {:target (. js/document (getElementById "app"))})
 
-
-(defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-) 
-
+(defn on-js-reload [])
