@@ -12,7 +12,8 @@
                  [cljs-ajax "0.3.11"]]
 
   :plugins [[lein-cljsbuild "1.0.5"]
-            [lein-figwheel "0.3.1"]]
+            [lein-figwheel "0.3.1"]
+            [lein-ring "0.8.10"]]
 
   :source-paths ["src"]
 
@@ -64,4 +65,8 @@
 
              ;; to configure a different figwheel logfile path
              ;; :server-logfile "tmp/logs/figwheel-logfile.log" 
-             })
+             }
+
+  :ring {:handler isomorphic.server/app
+      :nrepl {:start? true :port 4500}
+      :port 8090})
