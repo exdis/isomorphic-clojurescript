@@ -1,16 +1,22 @@
 (ns server.core
   (:require-macros [hiccups.core :as hiccups])
   (:require [cljs.nodejs :as node]
+            [om.core :as om :include-macros true]
+            [om.dom :as dom :include-macros true]
+            [isomorphic.components :as component]
             [hiccups.runtime :as hiccupsrt]))
 
 (def express (node/require "express"))
+
+(defn render []
+  (dom/render-to-str (om/build component/repo-item {:name "Hello from server"})))
 
 (defn markup []
   (hiccups/html
     [:head
      [:title "Isomorphic ClojureScript"]]
     [:body
-     [:div#app nil]
+     [:div#app (render)]
      [:script {:src "/js/compiled/isomorphic.js"}]]))
 
 (defn handler [req res]

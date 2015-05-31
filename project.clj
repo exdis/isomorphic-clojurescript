@@ -13,7 +13,9 @@
                  [hiccups "0.3.0"]]
 
   :node-dependencies [[source-map-support "0.2.8"]
-                      [express "4.11.1"]]
+                      [express "4.11.1"]
+                      [react "0.13.3"]
+                      [xmlhttprequest "1.7.0"]]
 
   :plugins [[lein-cljsbuild "1.0.5"]
             [lein-figwheel "0.3.1"]
@@ -38,9 +40,10 @@
               :source-paths ["src/server"]
               :compiler {:main server.core
                          :output-to "resources/server/server.js"
-                         :output-dir "resources/server"
+                         :output-dir "resources/server/out"
                          :target :nodejs
-                         :optimizations :simple}}
+                         :optimizations :simple
+                         :preamble ["include.js"]}}
              {:id "min"
               :source-paths ["src/isomorphic"]
               :compiler {:output-to "resources/public/js/compiled/isomorphic.js"

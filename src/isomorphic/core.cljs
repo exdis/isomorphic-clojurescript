@@ -1,6 +1,7 @@
 (ns ^:figwheel-always isomorphic.core
     (:require [om.core :as om :include-macros true]
               [om.dom :as dom :include-macros true]
+              [isomorphic.components :as component]
               [ajax.core :refer [GET POST]]))
 
 (enable-console-print!)
@@ -15,19 +16,7 @@
       :response-format :json
       :keywords? true})
 
-(defn repo-item [repo owner]
-  (reify om/IRender
-    (render [_]
-      (dom/li nil (:name repo)))))
-
-(defn repo-list [data owner]
-  (reify om/IRender
-    (render [_]
-      (dom/h1 nil "GitHub repos")
-      (apply dom/ul nil
-        (om/build-all repo-item data)))))
-
-(om/root repo-list repos
+(om/root component/repo-list repos
   {:target (. js/document (getElementById "app"))})
 
 (defn on-js-reload [])
