@@ -10,19 +10,22 @@
                  [sablono "0.3.4"]
                  [org.omcljs/om "0.8.8"]
                  [cljs-ajax "0.3.11"]
-                 [hiccup "1.0.5"]]
+                 [hiccups "0.3.0"]]
+
+  :node-dependencies [[source-map-support "0.2.8"]
+                      [express "4.11.1"]]
 
   :plugins [[lein-cljsbuild "1.0.5"]
             [lein-figwheel "0.3.1"]
-            [lein-ring "0.8.10"]]
+            [lein-npm "0.4.0"]]
 
   :source-paths ["src"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
-  
+
   :cljsbuild {
     :builds [{:id "dev"
-              :source-paths ["src"]
+              :source-paths ["src/isomorphic"]
 
               :figwheel { :on-jsload "isomorphic.core/on-js-reload" }
 
@@ -31,10 +34,17 @@
                          :output-to "resources/public/js/compiled/isomorphic.js"
                          :output-dir "resources/public/js/compiled/out"
                          :source-map-timestamp true }}
+             {:id "server"
+              :source-paths ["src/server"]
+              :compiler {:main server.core
+                         :output-to "resources/server/server.js"
+                         :output-dir "resources/server"
+                         :target :nodejs
+                         :optimizations :simple}}
              {:id "min"
-              :source-paths ["src"]
+              :source-paths ["src/isomorphic"]
               :compiler {:output-to "resources/public/js/compiled/isomorphic.js"
-                         :main isomorphic.core                         
+                         :main isomorphic.core
                          :optimizations :advanced
                          :pretty-print false}}]}
 
@@ -66,8 +76,4 @@
 
              ;; to configure a different figwheel logfile path
              ;; :server-logfile "tmp/logs/figwheel-logfile.log" 
-             }
-
-  :ring {:handler isomorphic.server/app
-      :nrepl {:start? true :port 4500}
-      :port 8090})
+             })
