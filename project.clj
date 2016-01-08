@@ -14,6 +14,7 @@
 
   :node-dependencies [[source-map-support "0.2.8"]
                       [express "4.11.1"]
+                      [request "2.67.0"]
                       [react "0.13.3"]
                       [xmlhttprequest "1.7.0"]]
 
